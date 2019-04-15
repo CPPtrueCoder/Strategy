@@ -4,7 +4,7 @@ using namespace std;
 
   int main()
   {
-    Compressor n(std::make_unique<Question>());
-    n.compress();
+    auto n(std::make_unique<Question>());
+    n->compress();
   }
 
