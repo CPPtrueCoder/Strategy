@@ -5,51 +5,42 @@ struct Coordinates {
   int x;
   int y;
 };
-
+std::ostream& operator<<(std::ostream& out, const Coordinates current_coordinates_) {
+  out << "X: " << current_coordinates_.x << " "
+      << "Y: " << current_coordinates_.y << std::endl;
+  return out;
+}
 class MovingTarget {
  public:
-  virtual void NextPos() = 0;
-  virtual int GetX()=0;
-  virtual int GetY()=0;
+  virtual Coordinates NextPos(Coordinates& coordinates) = 0;
 
   virtual void Shooting() = 0;
   virtual ~MovingTarget() = default;
 };
 
-class TankAggressor {
+class TankAggressor : public MovingTarget {
  public:
-  virtual int GetX(){
-    return coordinates.x;
+  TankAggressor(std::unique_ptr<MovingTarget>&& moving_target)
+      : moving_target_{std::move(moving_target)},
+        damage_radius_(200),
+        velocity_(15){};
+  void Move() {
+    current_coordinates_ = moving_target_->NextPos(current_coordinates_);
   }
-  virtual int GetY(){
-    return coordinates.y;
-  }
-  virtual void  SetX(int x){
-    coordinates.x= x;
-  }
-  virtual void  SetY(int y){
-    coordinates.y= y;
-  }
-  TankAggressor(std::unique_ptr<MovingTarget> &&  moving_target) : moving_target_{std::move(moving_target)},damage_radius_(200),velocity_(15){};
-  void NextPos(){
-    coordinates.x+=velocity_*2;
-    coordinates.y=velocity_*3;
-  }
+
  private:
   std::unique_ptr<MovingTarget> moving_target_;
-  Coordinates coordinates;
+  Coordinates current_coordinates_;
   double damage_radius_;
   double velocity_;
 };
 
-class SquareMoving:public MovingTarget {
-  void NextPos(){
+class SquareMoving : public MovingTarget {
+  Coordinates NextPos(Coordinates&coordinates) {
 
   }
 };
 
-class CircleMoving:public MovingTarget{
-  void NextPos(){
-
-  }
+class CircleMoving : public MovingTarget {
+  void NextPos() {}
 };
