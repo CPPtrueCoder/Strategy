@@ -25,7 +25,7 @@ class TankAggressor : public MovingTarget {
         damage_radius_(200),
         velocity_(15){};
   void Move() {
-    current_coordinates_ = moving_target_->NextPos(current_coordinates_);
+    moving_target_->NextPos(current_coordinates_);
   }
 
  private:
