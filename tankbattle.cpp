@@ -2,9 +2,18 @@
 #include <memory>
 
 struct Coordinates {
-  int x;
-  int y;
+  double x;
+  double y;
 };
+[[nodiscard]] double ZeroVelocity()noexcept{
+  double x=0;
+  return x;
+}
+[[nodiscard]] Coordinates ZeroCoordinate() noexcept {
+  Coordinates coordinates={0,0};
+  return coordinates;
+}
+
 std::ostream& operator<<(std::ostream& out, const Coordinates current_coordinates_) {
   out << "X: " << current_coordinates_.x << " "
       << "Y: " << current_coordinates_.y << std::endl;
@@ -12,8 +21,7 @@ std::ostream& operator<<(std::ostream& out, const Coordinates current_coordinate
 }
 class MovingTarget {
  public:
-  virtual void NextPos(Coordinates& coordinates) = 0;
-
+  virtual void NextPos(Coordinates& coordinates,double velocity) = 0;
   virtual void Shooting() = 0;
   virtual ~MovingTarget() = default;
 };
@@ -25,8 +33,12 @@ class TankAggressor : public MovingTarget {
         damage_radius_(200),
         velocity_(15){};
   virtual void NextPos(Coordinates &coordinates) {
-    moving_target_->NextPos(current_coordinates_);
-
+    for (int i =0 ; i<30;++i){
+      moving_target_->NextPos(current_coordinates_,velocity_);
+    }
+  }
+  void Shooting()override{
+    std::cout<<" Shoot!"<<std::endl;
   }
  private:
   std::unique_ptr<MovingTarget> moving_target_;
@@ -35,12 +47,22 @@ class TankAggressor : public MovingTarget {
   double velocity_;
 };
 
-class SquareMoving : public MovingTarget {
-  void NextPos(Coordinates&coordinates) {
-
+class Stop: public MovingTarget {
+  void NextPos(Coordinates&coordinates,double velocity) {
+    coordinates=ZeroCoordinate();
+    velocity=ZeroVelocity();
   }
 };
 
-class CircleMoving : public MovingTarget {
-  void NextPos() {}
+class LineMovingX : public MovingTarget {
+  void NextPos(Coordinates&coordinates,double velocity) {
+    coordinates.x+=velocity;
+  }
 };
+
+class LineMovingY:public MovingTarget{
+  void NextPos(Coordinates&coordinates,double velocity){
+    coordinates.y+=velocity;
+  }
+};
+
