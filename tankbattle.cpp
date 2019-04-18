@@ -12,7 +12,7 @@ std::ostream& operator<<(std::ostream& out, const Coordinates current_coordinate
 }
 class MovingTarget {
  public:
-  virtual Coordinates NextPos(Coordinates& coordinates) = 0;
+  virtual void NextPos(Coordinates& coordinates) = 0;
 
   virtual void Shooting() = 0;
   virtual ~MovingTarget() = default;
@@ -24,10 +24,10 @@ class TankAggressor : public MovingTarget {
       : moving_target_{std::move(moving_target)},
         damage_radius_(200),
         velocity_(15){};
-  void Move() {
+  virtual void NextPos(Coordinates &coordinates) {
     moving_target_->NextPos(current_coordinates_);
-  }
 
+  }
  private:
   std::unique_ptr<MovingTarget> moving_target_;
   Coordinates current_coordinates_;
@@ -36,7 +36,7 @@ class TankAggressor : public MovingTarget {
 };
 
 class SquareMoving : public MovingTarget {
-  Coordinates NextPos(Coordinates&coordinates) {
+  void NextPos(Coordinates&coordinates) {
 
   }
 };
