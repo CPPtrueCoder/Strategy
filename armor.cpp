@@ -1,6 +1,7 @@
 #include "armor.h"
 
-Armor::Armor()
-{
 
+bool Armor::IsPenetrated(Ammo projectile)
+{
+  return projectile.GetDamage()>thickness_;
 }
