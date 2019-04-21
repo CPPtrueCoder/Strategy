@@ -12,12 +12,13 @@
 class panzer
 {
 public:
- panzer(Gun gun):gun_(gun){};
-
+ panzer(Gun *gun):gun_(gun){};
+ Ammo LoadedAmmo(){}
 
 private:
  std::string model_ ;
- Gun gun_;
+ Gun *gun_;
+
  std::list<Armor> armours;
  std::list<Ammo> ammos;
  int health;
